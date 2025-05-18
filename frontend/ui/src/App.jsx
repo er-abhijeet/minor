@@ -38,7 +38,7 @@ function App() {
   const userId = user[0];
   // const userId=2;
   useEffect(() => {
-    fetch(`http://${ip}:3000/food-diary/${userId}`)
+    fetch(`${ip}/food-diary/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setFoodDiary(data);
@@ -48,7 +48,7 @@ function App() {
   useEffect(() => {
     const fetchTargetCalories = async () => {
       try {
-        const response = await fetch(`http://${ip}:3000/userdata/?userId=${userId}`);
+        const response = await fetch(`${ip}/userdata/?userId=${userId}`);
         const data = await response.json();
         if (data[0].targetcalories) setTargetCals(data[0].targetcalories);
         // console.log('herre',data[0]);
@@ -60,7 +60,7 @@ function App() {
     fetchTargetCalories();
   }, []);
   useEffect(() => {
-    fetch(`http://${ip}:3000/macros/${userId}`)
+    fetch(`${ip}/macros/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setCals(data.total_cals || 0);
@@ -204,7 +204,7 @@ function App() {
     // console.log(foodDiary);
     
     try {
-      const response = await fetch(`http://${ip}:3000/add`, {
+      const response = await fetch(`${ip}/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -219,7 +219,7 @@ function App() {
         setCals(Number(parseInt(cals) + parseInt(temp[1])));
         setProtein(Number(parseInt(protein) + parseInt(temp[2])));
         setCarb(Number(parseInt(carb) + parseInt(temp[3])));
-        fetch(`http://${ip}:3000/all/?userId=${userId}`)
+        fetch(`${ip}/all/?userId=${userId}`)
         .then((res)=>{
           return res.json();
         }).then((data)=>{

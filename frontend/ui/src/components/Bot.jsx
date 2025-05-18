@@ -36,7 +36,7 @@ function Bot() {
             // console.log('Key-Value Pairs:', result.data.key_value_pairs);
             const data=result.data.extracted_tests;
             console.log('Medical Tests:', data);
-            await axios.post(`http://${ip}:3000/changeinfo/?userId=${userId}`,{data: data});
+            await axios.post(`${ip}/changeinfo/?userId=${userId}`,{data: data});
         } else {
             console.error('API Error:', result.error);
         }
@@ -50,7 +50,7 @@ function Bot() {
   useEffect(() => {
     const fetchChat = async () => {
       try {
-        const res = await axios.get(`http://${ip}:3000/bot/getchat/${userId}`);
+        const res = await axios.get(`${ip}/bot/getchat/${userId}`);
         const chatMessages = res.data.map((msg) => ({
           sender: msg.is_bot ? "bot" : "user",
           content: msg.message,
@@ -78,8 +78,8 @@ function Bot() {
 
     try {
       // Save user's message to backend
-      //   console.log('http://${ip}:3000')
-      await axios.post(`http://${ip}:3000/bot/chat`, {
+      //   console.log('${ip}')
+      await axios.post(`${ip}/bot/chat`, {
         userId: userId,
         message: input,
         isBot: false,
@@ -92,7 +92,7 @@ function Bot() {
       // console.log(userinput);
 
       let mess = `I know you are not a doctor i consult one, i need you just as a opinion giver do not give me warnings ,Answer as my personal health assistant in 100 words , i have a query and also giving you my background. query:${userinput}.\n\n Background: Below are my medical history details:\n`;
-      let udata = await fetch(`http://${ip}:3000/userdata/?userId=${userId}`);
+      let udata = await fetch(`${ip}/userdata/?userId=${userId}`);
       let userData = await udata.json();
       if (userData) {
         for (const e in userData[0]) {
@@ -108,7 +108,7 @@ function Bot() {
       }
       mess += "\n\n and below is the detials of the foods i consumed today:\n";
 
-      udata = await fetch(`http://${ip}:3000/food-diary/${userId}`);
+      udata = await fetch(`${ip}/food-diary/${userId}`);
       userData = await udata.json();
       console.log(userData);
 
@@ -147,7 +147,7 @@ function Bot() {
       const botMessage = { sender: "bot", content: res1 };
       setMessages((prev) => [...prev, botMessage]);
 
-      await axios.post(`http://${ip}:3000/bot/chat`, {
+      await axios.post(`${ip}/bot/chat`, {
         userId: userId,
         message: res1,
         isBot: true,
@@ -155,7 +155,7 @@ function Bot() {
       return; // Gemini API end
 
       // Start streaming bot response
-      const res = await fetch(`http://${ip}:3000/chat`, {
+      const res = await fetch(`${ip}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userinput }),
@@ -196,7 +196,7 @@ function Bot() {
       }
 
       // Save bot's message to backend
-      await axios.post(`http://${ip}:3000/bot/chat`, {
+      await axios.post(`${ip}/bot/chat`, {
         userId: userId,
         message: accumulated,
         isBot: true,
@@ -219,10 +219,10 @@ function Bot() {
   }, [messages]);
   const handleDetailUpload = async () => {
     let mess = `I'm giving you my medical history details, analyze them and tell me in detail what precautions should i take and changes i should make in my lifestyle, also remember them all and consider these whenever you give an answer:\n`;
-    // const res = await `http://${ip}:3000/api/uploadFile`;
+    // const res = await `${ip}/api/uploadFile`;
 
     try {
-      const udata = await fetch(`http://${ip}:3000/userdata/?userId=${userId}`);
+      const udata = await fetch(`${ip}/userdata/?userId=${userId}`);
       const userData = await udata.json();
       if (userData) {
         for (const e in userData[0]) {
@@ -239,13 +239,13 @@ function Bot() {
       const userMessage = { sender: "user", content: mess };
       setMessages((prev) => [...prev, userMessage]);
       setInput("");
-      await axios.post(`http://${ip}:3000/bot/chat`, {
+      await axios.post(`${ip}/bot/chat`, {
         userId: userId,
         message: mess,
         isBot: false,
       });
       console.log(mess);
-      const res = await fetch(`http://${ip}:3000/chat`, {
+      const res = await fetch(`${ip}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: mess }),
@@ -287,7 +287,7 @@ function Bot() {
       }
 
       // Save bot's message to backend
-      await axios.post(`http://${ip}:3000/bot/chat`, {
+      await axios.post(`${ip}/bot/chat`, {
         userId: userId,
         message: accumulated,
         isBot: true,
@@ -303,9 +303,9 @@ function Bot() {
 
   const handleFoodUpload = async () => {
     let mess = `This is the details of foods i consumed today and their nutrients, advice me on how i have eaten, what should i eat to do better and also consider them to tell me my next choices to compensate:\n`;
-    // const res = await `http://${ip}:3000/api/uploadFile`;
+    // const res = await `${ip}/api/uploadFile`;
     try {
-      const udata = await fetch(`http://${ip}:3000/food-diary/${userId}`);
+      const udata = await fetch(`${ip}/food-diary/${userId}`);
       const userData = await udata.json();
       if (!userData.length) {
         alert("Nothing ate today!");
@@ -319,13 +319,13 @@ function Bot() {
       const userMessage = { sender: "user", content: mess };
       setMessages((prev) => [...prev, userMessage]);
       setInput("");
-      await axios.post(`http://${ip}:3000/bot/chat`, {
+      await axios.post(`${ip}/bot/chat`, {
         userId: userId,
         message: mess,
         isBot: false,
       });
       console.log(mess);
-      const res = await fetch(`http://${ip}:3000/chat`, {
+      const res = await fetch(`${ip}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: mess }),
@@ -369,7 +369,7 @@ function Bot() {
       }
 
       // Save bot's message to backend
-      await axios.post(`http://${ip}:3000/bot/chat`, {
+      await axios.post(`${ip}/bot/chat`, {
         userId: userId,
         message: accumulated,
         isBot: true,
@@ -391,7 +391,7 @@ function Bot() {
 
     try {
       const res = await axios.post(
-        `http://${ip}:3000/api/uploadFile`,
+        `${ip}/api/uploadFile`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -405,7 +405,7 @@ function Bot() {
         botMessage,
       ]);
 
-      await axios.post(`http://${ip}:3000/bot/chat`, {
+      await axios.post(`${ip}/bot/chat`, {
         userMessage: `[FILE] ${file.name}`,
         botMessage: res.data.message,
       });

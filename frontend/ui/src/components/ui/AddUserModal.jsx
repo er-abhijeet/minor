@@ -14,7 +14,7 @@ function AddUserModal({ isOpen, onClose }) {
   };
   useEffect(() => {
     if (isOpen) {
-      fetch(`http://${ip}:3000/users`) // or your actual endpoint
+      fetch(`${ip}/users`) // or your actual endpoint
         .then((res) => res.json())
         .then((data) => setExistingUsers(data))
         .catch((err) => console.error("Failed to load users", err));
@@ -23,7 +23,7 @@ function AddUserModal({ isOpen, onClose }) {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`http://${ip}:3000/users`);
+      const res = await fetch(`${ip}/users`);
       const data = await res.json();
       setExistingUsers(data);
     //   console.log("Users set:", data);
@@ -36,7 +36,7 @@ function AddUserModal({ isOpen, onClose }) {
     if (!name.trim()) return;
     console.log("first1")
     try {
-      const response = await fetch(`http://${ip}:3000/addUser`, {
+      const response = await fetch(`${ip}/addUser`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name }),

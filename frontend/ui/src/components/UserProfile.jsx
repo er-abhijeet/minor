@@ -21,7 +21,7 @@ function UserProfile() {
   // console.log(userData);
   useEffect(() => {
     axios
-      .get(`http://${ip}:3000/userdata/?userId=${userId}`)
+      .get(`${ip}/userdata/?userId=${userId}`)
       .then((res) => setUserData(res.data[0]))
       .catch(console.error);
   }, [userId]);
@@ -34,7 +34,7 @@ function UserProfile() {
   const saveChanges = async () => {
     try {
       console.log(userData);
-      await axios.post(`http://${ip}:3000/changeinfo/?userId=${userId}`,{data: userData});
+      await axios.post(`${ip}/changeinfo/?userId=${userId}`,{data: userData});
       setEditing(false);
       alert("Details updated!");
     } catch (err) {
@@ -48,11 +48,11 @@ function UserProfile() {
     try {
       const data = { [newKey]: newValue } ;
       await axios.post(
-        `http://${ip}:3000/changeinfo?userId=${userId}`,
+        `${ip}/changeinfo?userId=${userId}`,
         {data: data}
       );
       // Refresh userData data
-      const res = await axios.get(`http://${ip}:3000/userdata/?userId=${userId}`);
+      const res = await axios.get(`${ip}/userdata/?userId=${userId}`);
       setUserData(res.data[0]);
       setNewKey("");
       setNewValue("");

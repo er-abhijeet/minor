@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState ,useContext} from "react";
+import UserContext from "@/context/UserContext";
 
 
 export default function UserInfo({ userId, setTargetCals, targetCals, setInfoPreview }) {
-  const ip="localhost"
+  // const ip="localhost"
+  const { ipad } = useContext(UserContext);
+  const ip=ipad; // for backend
   const [formData, setFormData] = useState({
     height: "",
     weight: "",
@@ -38,7 +41,7 @@ export default function UserInfo({ userId, setTargetCals, targetCals, setInfoPre
       setReset(false);
 
       // ✅ Save to database
-      await fetch(`http://${ip}:3000/user/${userId}/targetCalories`, {
+      await fetch(`${ip}/user/${userId}/targetCalories`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetCalories: calculatedCals }),
@@ -49,7 +52,7 @@ export default function UserInfo({ userId, setTargetCals, targetCals, setInfoPre
 
       console.log(typeof(formData));
       console.log(formData);
-      await fetch(`http://${ip}:3000/changeinfo/?userId=${userId}`,{
+      await fetch(`${ip}/changeinfo/?userId=${userId}`,{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({data:formData}),

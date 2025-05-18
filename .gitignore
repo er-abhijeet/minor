@@ -6,6 +6,10 @@ image_model
 
 db.js
 back1/
+YourAppName/
+ap.py
+frontend\ui\src\ap.py
+
 # Logs
 logs
 *.log
