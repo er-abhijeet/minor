@@ -17,6 +17,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "lucide-react": "^0.475.0",
     "pg": "^8.13.3",
@@ -24,6 +25,7 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.5.3",
     "react-webcam": "^7.2.0",
+    "recharts": "^2.15.3",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7"
   },

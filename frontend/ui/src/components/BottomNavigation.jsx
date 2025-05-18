@@ -2,7 +2,7 @@
 import { Camera, User } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { BotMessageSquare } from 'lucide-react';
-
+import { ChartColumnIncreasing } from 'lucide-react';
 
 function BottomNavigation(props) {
   const navigate = useNavigate();
@@ -17,11 +17,14 @@ function BottomNavigation(props) {
         <BotMessageSquare />
           <p className="text-xs">Bot</p>
         </div>
+        <div onClick={()=>{navigate('/analytics');}} className={`flex flex-col items-center ${props.act=="analytics"? "text-green-600":"text-gray-400"}`}>
+         <ChartColumnIncreasing />
+          <p className="text-xs">Analytics</p>
+        </div>
         <div onClick={()=>{navigate('/profile');}} className={`flex flex-col items-center ${props.act=="profile"? "text-green-600":"text-gray-400"}`}>
           <User />
           <p className="text-xs">Profile</p>
         </div>
-        
       </div>
       </>
     )

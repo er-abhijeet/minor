@@ -155,52 +155,52 @@ function Bot() {
       return; // Gemini API end
 
       // Start streaming bot response
-      const res = await fetch(`${ip}/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userinput }),
-      });
+      // const res = await fetch(`${ip}/chat`, {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ message: userinput }),
+      // });
 
-      if (!res.body) {
-        throw new Error("No response body from server");
-      }
+      // if (!res.body) {
+      //   throw new Error("No response body from server");
+      // }
 
-      let accumulated = "";
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder("utf-8");
+      // let accumulated = "";
+      // const reader = res.body.getReader();
+      // const decoder = new TextDecoder("utf-8");
 
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n").filter(Boolean);
+      // while (true) {
+      //   const { value, done } = await reader.read();
+      //   if (done) break;
+      //   const chunk = decoder.decode(value, { stream: true });
+      //   const lines = chunk.split("\n").filter(Boolean);
 
-        for (const line of lines) {
-          try {
-            let curline = JSON.parse(line).message.content;
-            //   console.log("type ",typeof(curline));
-            //   console.log("line's content is: ",curline);
-            accumulated += curline;
-            setMessages((prev) => {
-              const updated = [...prev];
-              updated[updated.length - 1] = {
-                sender: "bot",
-                content: accumulated,
-              };
-              return updated;
-            });
-          } catch (err) {
-            console.error("Error parsing stream chunk:", err);
-          }
-        }
-      }
+      //   for (const line of lines) {
+      //     try {
+      //       let curline = JSON.parse(line).message.content;
+      //       //   console.log("type ",typeof(curline));
+      //       //   console.log("line's content is: ",curline);
+      //       accumulated += curline;
+      //       setMessages((prev) => {
+      //         const updated = [...prev];
+      //         updated[updated.length - 1] = {
+      //           sender: "bot",
+      //           content: accumulated,
+      //         };
+      //         return updated;
+      //       });
+      //     } catch (err) {
+      //       console.error("Error parsing stream chunk:", err);
+      //     }
+      //   }
+      // }
 
-      // Save bot's message to backend
-      await axios.post(`${ip}/bot/chat`, {
-        userId: userId,
-        message: accumulated,
-        isBot: true,
-      });
+      // // Save bot's message to backend
+      // await axios.post(`${ip}/bot/chat`, {
+      //   userId: userId,
+      //   message: accumulated,
+      //   isBot: true,
+      // });
     } catch (error) {
       console.error("Error sending message:", error);
       setMessages((prev) => [
@@ -386,34 +386,34 @@ function Bot() {
     if (!file) return;
     callApi(file);
     return;
-    const formData = new FormData();
-    formData.append("file", file);
+    // const formData = new FormData();
+    // formData.append("file", file);
 
-    try {
-      const res = await axios.post(
-        `${ip}/api/uploadFile`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+    // try {
+    //   const res = await axios.post(
+    //     `${ip}/api/uploadFile`,
+    //     formData,
+    //     {
+    //       headers: { "Content-Type": "multipart/form-data" },
+    //     }
+    //   );
 
-      const botMessage = { sender: "bot", content: res.data.message };
-      setMessages((prev) => [
-        ...prev,
-        { sender: "user", content: file.name },
-        botMessage,
-      ]);
+    //   const botMessage = { sender: "bot", content: res.data.message };
+    //   setMessages((prev) => [
+    //     ...prev,
+    //     { sender: "user", content: file.name },
+    //     botMessage,
+    //   ]);
 
-      await axios.post(`${ip}/bot/chat`, {
-        userMessage: `[FILE] ${file.name}`,
-        botMessage: res.data.message,
-      });
+    //   await axios.post(`${ip}/bot/chat`, {
+    //     userMessage: `[FILE] ${file.name}`,
+    //     botMessage: res.data.message,
+    //   });
 
-      setFile(null);
-    } catch (error) {
-      console.error("File upload failed:", error);
-    }
+    //   setFile(null);
+    // } catch (error) {
+    //   console.error("File upload failed:", error);
+    // }
   };
 
   return (
@@ -468,7 +468,7 @@ function Bot() {
             >
               Upload
             </button>
-            <button
+            {/* <button
               onClick={handleFoodUpload}
               className="px-3 py-2  bg-green-600 text-white rounded-lg hover:bg-green-700"
             >
@@ -479,7 +479,7 @@ function Bot() {
               className="px-3 py-2  bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
               Send Details
-            </button>
+            </button> */}
           </div>
 
           <div className="mt-4 flex gap-2 items-center">

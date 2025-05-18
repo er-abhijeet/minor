@@ -217,6 +217,12 @@ app.post("/user/:userId/targetCalories", async (req, res) => {
           WHERE id = $2;
         `;
         await db.query(updateQuery, [value, userId]);
+
+        //3. Update to health_data history table
+        const query=`INSERT INTO health_data (user_id, name, date, parameter, value)
+                      VALUES($1, 'default', NOW(), $2, $3)`;
+        console.log(query, [userId, column, parseInt(value)]);
+        await db.query(query, [userId, column, parseInt(value)])
       }
   
       res.json({ message: "Details updated successfully" });
@@ -307,6 +313,103 @@ app.post("/user/:userId/targetCalories", async (req, res) => {
     }
   });
   
+
+app.get("/api/graphdata/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const { rows: entries } = await db.query(
+      `
+      SELECT 
+        food_item,
+        calories::FLOAT,
+        protein::FLOAT,
+        carbs::FLOAT,
+        date 
+      FROM userInfo
+      WHERE id = $1 
+        AND date >= CURRENT_DATE - INTERVAL '100 days'
+      ORDER BY date ASC
+      `,
+      [userId]
+    );
+
+    const dayMap = {};
+    const foodCount = {};
+
+    for (let entry of entries) {
+      const date = entry.date.toISOString().split("T")[0]; // to group by date
+
+      // For line charts (group by day)
+      if (!dayMap[date]) {
+        dayMap[date] = { calories: 0, protein: 0, carbs: 0 };
+      }
+      dayMap[date].calories += entry.calories || 0;
+      dayMap[date].protein += entry.protein || 0;
+      dayMap[date].carbs += entry.carbs || 0;
+
+      // For pie chart (food item proportion)
+      if (!foodCount[entry.food_item]) {
+        foodCount[entry.food_item] = 0;
+      }
+      foodCount[entry.food_item] += entry.calories || 0;
+    }
+ 
+    // Format data for frontend graphs
+    const graphData = { 
+      lineData: Object.entries(dayMap).map(([date, values]) => ({
+        date, 
+        ...values,
+      })),
+      pieData: Object.entries(foodCount).map(([food_item, count]) => ({
+        name: food_item,
+        value: count,
+      })),
+    };
+
+    res.json(graphData);
+  } catch (error) {
+    console.error("Error fetching graph data:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+app.get("/api/healthgraphdata/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await db.query(
+      "SELECT parameter, date, value FROM health_data WHERE user_id = $1 ORDER BY date ASC",
+      [userId]
+    );
+    const parameters = new Set();
+    const data = {};
+
+    result.rows.forEach((row) => {
+      const param = row.parameter.toLowerCase();
+      parameters.add(param);
+
+      if (!data[param]) {
+        data[param] = [];
+      }
+
+      data[param].push({
+        date: row.date.toISOString(), // Format: YYYY-MM-DD
+        value: Number(row.value),
+      });
+    });
+    res.json({
+      parameters: Array.from(parameters),
+      data,
+    });
+  } catch (err) {
+    console.error("Error fetching health data:", err.stack);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 
 
 app.listen(port, '0.0.0.0', () => {

@@ -8,6 +8,7 @@ import React from 'react'
 import Bot from './components/Bot'
 import UserProfile from './components/UserProfile'
 import UserContextProvider from './context/UserContextProvider'
+import Analytics from './components/Analytics'
 
 
 // createRoot(document.getElementById('root')).render(
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: <UserProfile userId = {2}/>
+  },
+  {
+    path: "/analytics",
+    element: <Analytics userId = {2}/>
   }
 ])
 
