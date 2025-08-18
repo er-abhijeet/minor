@@ -6,8 +6,8 @@ function UserContextProvider({children}) {
     // const [user,setUser]=useState([2,"Abhijeet"])
     const render_backend=`https://minor-backend-ujgq.onrender.com`
     const local="http://localhost:3000";
-    const ipad=local;
-    const fileip="192.168.227.166"
+    const ipad=render_backend;
+    const fileip="http://flask-back-8eil.onrender.com/" || "192.168.227.166"
     const [user, setUser] = useState(() => {
         // Try to get user from localStorage on first render
         const storedUser = localStorage.getItem("user");
