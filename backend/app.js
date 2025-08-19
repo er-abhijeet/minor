@@ -39,6 +39,55 @@ const port =process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
+// Gemini API Proxy Endpoints
+import fetch from 'node-fetch';
+
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '<YOUR_GEMINI_API_KEY_HERE>';
+const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=';
+
+// Nutrition Macros Endpoint
+app.post('/api/gemini/macros', async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    const body = { contents: [{ parts: [{ text: prompt }] }] };
+    const response = await fetch(GEMINI_BASE_URL + GEMINI_API_KEY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Gemini macros error', details: err.message });
+  }
+});
+
+// Food Recognition from Image Endpoint
+app.post('/api/gemini/food-image', async (req, res) => {
+  try {
+    const { imageBase64, imagePrompt } = req.body;
+    const body = {
+      contents: [
+        {
+          parts: [
+            { text: imagePrompt },
+            { inline_data: { mime_type: 'image/jpeg', data: imageBase64 } }
+          ]
+        }
+      ]
+    };
+    const response = await fetch(GEMINI_BASE_URL + GEMINI_API_KEY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Gemini food image error', details: err.message });
+  }
+});
+
 // Fetch all data from init table
 app.get("/", async (req, res) => {
     try {
