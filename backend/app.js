@@ -39,9 +39,6 @@ const port =process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Gemini API Proxy Endpoints
-import fetch from 'node-fetch';
-
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '<YOUR_GEMINI_API_KEY_HERE>';
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=';
 
